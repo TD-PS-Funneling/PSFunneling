@@ -317,3 +317,22 @@ div.accountInfo
     text-align: right;
     padding-right: 10px;
 }
+
+.labelViewMode
+{
+    color:black;
+    border-top-color:#cccccc;
+    border-right-color:#cccccc;
+    border-left-color:#cccccc;
+    border-bottom-color:#cccccc;
+    border-top-width:1px;
+    border-right-width:1px;
+    border-left-width:1px;
+    border-bottom-width:1px;
+    border-top-style:solid;
+    border-right-style:solid;
+    border-left-style:solid;
+    border-bottom-style:solid;
+    width:150px;
+    display:inline-block;
+}

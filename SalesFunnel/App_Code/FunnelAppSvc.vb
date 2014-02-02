@@ -2,6 +2,8 @@
 Imports System.Web.Services
 Imports System.Web.Services.Protocols
 Imports System.Data
+Imports Microsoft.VisualBasic
+Imports Teradata.Client.Provider
 
 ' To allow this Web Service to be called from script, using ASP.NET AJAX, uncomment the following line.
 ' <System.Web.Script.Services.ScriptService()> _
@@ -114,7 +116,7 @@ Public Class FunnelAppSvc
     <WebMethod()> _
     Public Function GetOpportunityDetails(intOpportunityID As Integer) As DataSet
         Dim talTest As New Teradata_Access_Layer
-        If intOpportunityID <> vbNull And intOpportunityID > 0 Then
+        If intOpportunityID <> Microsoft.VisualBasic.vbNull And intOpportunityID > 0 Then
             Return talTest.GetDataSet("SELECT * FROM FIHL_POC.opportunity_state_detail WHERE opportunity_id=" & intOpportunityID.ToString & ";")
         Else
             Return talTest.GetDataSet("")
@@ -171,11 +173,35 @@ Public Class FunnelAppSvc
         'If strLogin = "SSCOTT" Or strLogin = "SS185226" Then strLogin = "KB185024"
         'If strLogin = "SSCOTT" Or strLogin = "SS185226" Then strLogin = "JK185071"
         'Session("strUserName") = strLogin
-            Return talTest.GetDataSet("SELECT * FROM FIHL_POC.resource_position_vw WHERE qlookid='" & Trim(strLogin.ToUpper) & "';")
+        Return talTest.GetDataSet("SELECT * FROM FIHL_POC.resource_position_vw WHERE qlookid='" & Trim(strLogin.ToUpper) & "';")
     End Function
 
+    <WebMethod()>
+    Public Function GetResourceList() As DataSet
+        Dim talTest As New Teradata_Access_Layer
+        Return talTest.GetDataSet("SELECT * FROM FIHL_POC.resource;")
+    End Function
 
+    <WebMethod()>
+    Public Function DelResource(intResourceID As Long) As Integer
+        Dim intResult As Integer = -1
+        Dim cmd As New TdCommand
+        Dim talTest As New Teradata_Access_Layer
 
+        cmd.CommandText = "FIHL_POC.SP_RESOURCE_DELETE"
+        cmd.CommandType = CommandType.StoredProcedure
+
+        cmd.Parameters.Add("oMessage", TdType.Integer)
+        cmd.Parameters.Add("iRESOURCE_ID", TdType.Integer)
+
+        cmd.Parameters("oMessage").Direction = ParameterDirection.Output
+        cmd.Parameters("iRESOURCE_ID").Value = intResourceID
+
+        intResult = talTest.ExecCmd(cmd)
+
+        Return intResult
+
+    End Function
 
     <WebMethod()> _
     Public Function InHierarchy(intOrganizationStructID As Long, intCustomerID As Long) As DataSet
@@ -315,7 +341,7 @@ Public Class FunnelAppSvc
         strSQL += " win_percent=" & bytWinPercent.ToString & ", "
         strSQL += " opportunity_status_id=" & intOpportunityStatusID.ToString & ", "
         strSQL += " opportunity_desc='" & strOpportunityDesc & "', "
-        strSQL += " revenue_upside=" & intRevenueUpside.tostring & ", "
+        strSQL += " revenue_upside=" & intRevenueUpside.ToString & ", "
         strSQL += " update_time= '" & Format(Now, "HH:mm:ss").ToString & "', "
         strSQL += " update_qlookid='" & strQuicklookID & "' "
         strSQL += " WHERE opportunity_state_id=" & intOpportunityStateID.ToString & " AND opportunity_id=" & intOpportunityID.ToString & ";"

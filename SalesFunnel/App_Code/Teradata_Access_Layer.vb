@@ -123,12 +123,37 @@ Public Class Teradata_Access_Layer
                 intResult = cmdTD.ExecuteNonQuery()
                 CloseConn()
             Catch ex As Exception
-
             End Try
         End If
         Return intResult
     End Function
 
+    ''' <summary>
+    ''' Executes a command that doesn't return any data. i.e. stored procedured
+    ''' </summary>
+    ''' <param name="command"></param>
+    ''' <returns></returns>
+    ''' <remarks>
+    ''' Author: Jericho Segubre (JS186060)
+    ''' Date: 01/28/2014
+    ''' </remarks>
+    Public Function ExecCmd(ByVal command As TdCommand) As Integer
+        Dim intResult As Integer = -1
+
+        Try
+            OpenConn()
+            command.Connection = cnTD
+
+            intResult = command.ExecuteNonQuery()
+
+        Catch ex As Exception
+            Throw ex
+        Finally
+            CloseConn()
+        End Try
+
+        Return intResult
+    End Function
 
     Public Function GetDataTable(ByVal strSQL As String) As DataTable
         Dim dtReturn As New DataTable
