@@ -17,7 +17,6 @@ Partial Class ResourceList
 #Region "Page Events"
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         If Not Page.IsPostBack Then
-            DeleteResource()
             dtGridView = appService.GetResourceList().Tables(0)
             Me.BindData()
 
@@ -62,12 +61,19 @@ Partial Class ResourceList
 
         End If
 
-        'If e.Row.RowType = DataControlRowType.Header Then
-        '    Dim chkSelectAll As CheckBox = CType(e.Row.Cells(0).Controls(0), CheckBox)
-        '    chkSelectAll.Attributes.Add("onclick", "setAllElements(this.id);")
-        'End If
+        If e.Row.RowType = DataControlRowType.Header Then
+            Dim chkSelectAll As CheckBox = CType(e.Row.Cells(0).Controls(0), CheckBox)
+            chkSelectAll.Attributes.Add("onclick", "setAllElements(this.id);")
+        End If
     End Sub
 #End Region
+
+#Region "Buttons"
+    Protected Sub lnkdelete_Click(sender As Object, e As EventArgs)
+
+    End Sub
+#End Region
+
 
 #Region "Drop Down List"
     Protected Sub ddlDisplay_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddlDisplay.SelectedIndexChanged
@@ -111,25 +117,9 @@ Partial Class ResourceList
         Return strSort
     End Function
 
-    Private Sub DeleteResource()
-        If IsNothing(Request.QueryString("items")) = False Then
-
-            Dim arrItem As String()
-            Dim strItem As String
-            arrItem = Request.QueryString("items").ToString().Split("::")
-            Dim recordCount As Integer
-
-            For Each strItem In arrItem
-                Dim lngID As Long = -1
-                Long.TryParse(strItem, lngID)
-                recordCount = recordCount + appService.DelResource(lngID)
-            Next
-
-            Response.Redirect("ResourceList.aspx")
-        End If
-    End Sub
-
 #End Region
+
+
 
 
 

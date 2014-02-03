@@ -6,7 +6,7 @@ Imports Microsoft.VisualBasic
 Imports Teradata.Client.Provider
 
 ' To allow this Web Service to be called from script, using ASP.NET AJAX, uncomment the following line.
-' <System.Web.Script.Services.ScriptService()> _
+<System.Web.Script.Services.ScriptService()> _
 <WebService(Namespace:="http://teradata.com/")> _
 <WebServiceBinding(ConformsTo:=WsiProfiles.BasicProfile1_1)> _
 <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
@@ -183,11 +183,13 @@ Public Class FunnelAppSvc
     End Function
 
     <WebMethod()>
-    Public Function DelResource(intResourceID As Long) As Integer
+    Public Function DelResource(ResourceID As String) As Integer
         Dim intResult As Integer = -1
         Dim cmd As New TdCommand
         Dim talTest As New Teradata_Access_Layer
+        Dim intResourceID As Long
 
+        Long.TryParse(ResourceID, intResourceID)
         cmd.CommandText = "FIHL_POC.SP_RESOURCE_DELETE"
         cmd.CommandType = CommandType.StoredProcedure
 
@@ -197,7 +199,7 @@ Public Class FunnelAppSvc
         cmd.Parameters("oMessage").Direction = ParameterDirection.Output
         cmd.Parameters("iRESOURCE_ID").Value = intResourceID
 
-        intResult = talTest.ExecCmd(cmd)
+        intResult = intResult + talTest.ExecCmd(cmd)
 
         Return intResult
 
