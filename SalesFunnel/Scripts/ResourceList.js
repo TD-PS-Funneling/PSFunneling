@@ -33,19 +33,19 @@ function validateDelete() {
         var result = confirm("Are you sure you want to delete these records?")
         if (result == true) {
             var deleteitems = "";
-
+            
             $('input:checkbox[name$=chkSelect]').each(
             function () {
                 if ($(this).is(':checked') == true) {
                     var strID = $(this).attr("id");
                     strID = strID.replace("chkSelect", "hdnID");
-                    deleteitems = deleteitems + $("#" + strID).val() + "::";
+                    deleteitems = $("#" + strID).val(); // + "_";
+                    webDeleteResource(deleteitems);
                 }
 
             });
-
-            deleteitems = deleteitems.substr(0, deleteitems.length - 2);
-            window.location.href = "ResourceList.aspx?items=" + deleteitems;
+            
+            window.location.href = "ResourceList.aspx"
         }
         return false;
     }
@@ -61,6 +61,30 @@ function deleteResource() {
 
 
 //End - Javscript functions
+
+//Begin - Ajax Web Services Call
+
+function webDeleteResource(resourceids) {
+    $.ajax({
+        cache: false,
+        type: 'POST',
+        url: 'FunnelAppSvc.asmx/DelResource',
+        data: '{ResourceID:' + resourceids + '}',
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        success: function (response) {
+            //alert(response.d);
+            //window.location.href = "ResourceList.aspx"
+            return true;
+        },
+        error: function (xhRequest, ErrorText, thrownError) {
+            alert(xhRequest.responseText)
+            //alert("Error while deleting records")
+        }
+    });
+}
+//End - Ajax Web Services Call
+
 
 //Begin - Initializes the message dialogs.
 //$(document).ready(function () {

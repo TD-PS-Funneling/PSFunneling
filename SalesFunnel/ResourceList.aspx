@@ -9,6 +9,7 @@
     <script type="text/javascript" src="Scripts/jquery-1.4.1.js"></script>
     <script type="text/javascript" src="Scripts/jquery-1.4.1.min.js"></script>
     <script type="text/javascript" src="Scripts/ResourceList.js"></script>
+    <script type="text/javascript" src="Scripts/jquery-1.10.2.js"></script>
     
 <%--    <link rel="stylesheet" href="Styles/jquery-ui-1.10.1.custom.css"/>
     <link rel="stylesheet" href="Styles/jquery.ui.dialog.css" />--%>
@@ -21,7 +22,7 @@
             </td>
             <td>&nbsp;</td>
             <td>
-                <a id="lnkdelete" style="cursor: pointer;" onclick="deleteResource()">Delete Resource</a>
+                <a id="lnkdelete" onclick="deleteResource()" style="cursor: pointer;">Delete Resource</a>
             </td>
             <td>&nbsp;</td>
             <td>
@@ -41,13 +42,12 @@
              OnPageIndexChanging="gvResource_PageIndexChanging" BackColor="White" BorderColor="#999999" BorderStyle="Solid" BorderWidth="1px" CellPadding="3" ForeColor="Black" GridLines="Vertical">
             <AlternatingRowStyle BackColor="#CCCCCC" />
             <Columns>
-                <asp:TemplateField >
-                    
+                <asp:TemplateField>
+                    <HeaderTemplate><asp:CheckBox ID="chkSelectAll" runat="server" /></HeaderTemplate>
                     <ItemTemplate>
                         <asp:CheckBox ID="chkSelect" runat="server" />
                         <asp:HiddenField ID="hdnID" runat="server" Value='<%# DataBinder.Eval(Container.DataItem, "RESOURCE_ID")%>' />
                     </ItemTemplate>
-
                 </asp:TemplateField>
                 <asp:BoundField DataField="RESOURCE_ID" HeaderText="Resource ID" SortExpression="RESOURCE_ID" />
                 <asp:BoundField DataField="QLOOKID" HeaderText="Quick Look ID" SortExpression="QLOOKID" />
