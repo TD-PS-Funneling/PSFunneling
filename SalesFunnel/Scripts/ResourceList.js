@@ -1,6 +1,13 @@
 ﻿//Begin - Javscript functions
-function addResource() {
-    window.location.href = "Resource.aspx?ID=0";
+
+//these variables are being populated on the markup of the html page
+var hiddenFieldResourceID; //contains the client id of the hidden field for the resource id 
+var hiddenFieldMode;   //contains the client id of the hidden field for the mode
+
+function addResource(){
+    editResource("0");
+
+    $("#frmSiteMaster").submit();
 }
 
 function setAllElements(chkAll) {
@@ -45,7 +52,8 @@ function validateDelete() {
 
             });
             
-            window.location.href = "ResourceList.aspx"
+            $("#frmSiteMaster").submit();
+            //window.location.href = "ResourceList.aspx"
         }
         return false;
     }
@@ -59,7 +67,52 @@ function deleteResource() {
     validateDelete();
 }
 
+function viewResource(resourceID) {
+    setHiddenField(hiddenFieldResourceID, resourceID);
+    setHiddenField(hiddenFieldMode, "View");
+}
 
+function editResource(resourceID) {
+    setHiddenField(hiddenFieldResourceID, resourceID);
+    setHiddenField(hiddenFieldMode, "Edit");
+}
+
+function cancelClick() {
+
+    var resourceID = $("input[id=" + hiddenFieldResourceID + "]").val();
+    var mode = $("input[id=" + hiddenFieldMode + "]").val();
+
+    if (resourceID != "0" && mode == "Edit") {
+        viewResource(resourceID);
+    }
+    else {
+        viewResource("-1");
+    }
+   
+}
+
+function editClick() {
+    var resourceID = $("input[id=" + hiddenFieldResourceID + "]").val();
+    editResource(resourceID);
+}
+
+function saveResource() {
+    var resourceID = $("input[id=" + hiddenFieldResourceID + "]").val();
+    var confirmation = confirm("Save Resource Information?");
+
+    if (confirmation) {
+        viewResource(resourceID);
+
+        return true;
+
+    }
+    else
+        return false;
+}
+
+function setHiddenField(hiddenFieldID, value) {
+    $("input[id=" + hiddenFieldID + "]").val(value);
+}
 //End - Javscript functions
 
 //Begin - Ajax Web Services Call

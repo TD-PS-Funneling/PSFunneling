@@ -179,7 +179,7 @@ Public Class FunnelAppSvc
     <WebMethod()>
     Public Function GetResourceList() As DataSet
         Dim talTest As New Teradata_Access_Layer
-        Return talTest.GetDataSet("SELECT * FROM FIHL_POC.resource;")
+        Return talTest.GetDataSet("SELECT * FROM FIHL_POC.resource ORDER BY resource_id;")
     End Function
 
     <WebMethod()>

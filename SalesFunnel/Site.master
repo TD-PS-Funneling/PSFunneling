@@ -4,12 +4,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head runat="server">
     <title></title>
-    <link href="~/Styles/Site.css?version=1" rel="stylesheet" type="text/css" />
+    <link href="~/Styles/Site.css?version=2" rel="stylesheet" type="text/css" />
     <asp:ContentPlaceHolder ID="HeadContent" runat="server">
     </asp:ContentPlaceHolder>
 </head>
 <body>
-    <form runat="server">
+    <form id="frmSiteMaster" runat="server">
     <div class="page">
         <div class="header">
             <div class="title">
