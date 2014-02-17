@@ -49,22 +49,22 @@ Partial Class ResourceList
 #Region "GridView"
 
     Protected Sub gvResource_PageIndexChanging(sender As Object, e As GridViewPageEventArgs) Handles gvResource.PageIndexChanging
-        ViewState("PageIndex") = e.NewPageIndex
+        Session("PageIndex") = e.NewPageIndex
         dtGridView = appService.GetResourceList().Tables(0)
         BindList()
     End Sub
 
     Protected Sub gvResource_Sorting(sender As Object, e As GridViewSortEventArgs) Handles gvResource.Sorting
-        ViewState("SortExpression") = e.SortExpression
-        If Not IsNothing(ViewState("SortDirection")) Then
+        Session("SortExpression") = e.SortExpression
+        If Not IsNothing(Session("SortDirection")) Then
             If (e.SortDirection = SortDirection.Ascending) Then
-                ViewState("SortDirection") = SortDirection.Descending.ToString()
+                Session("SortDirection") = SortDirection.Descending.ToString()
             Else
-                ViewState("SortDirection") = SortDirection.Ascending.ToString()
+                Session("SortDirection") = SortDirection.Ascending.ToString()
             End If
 
         Else
-            ViewState("SortDirection") = e.SortDirection
+            Session("SortDirection") = e.SortDirection
         End If
 
 
@@ -109,15 +109,15 @@ Partial Class ResourceList
         Dim dvSort As New DataView(dtGridView)
         Dim strfilter As String = String.Empty
 
-        If (Not IsNothing(ViewState("SortDirection"))) And (Not IsNothing(ViewState("SortExpression"))) Then
-            dvSort.Sort = ViewState("SortExpression").ToString() + " " + SortDirectionSql(ViewState("SortDirection").ToString())
+        If (Not IsNothing(Session("SortDirection"))) And (Not IsNothing(Session("SortExpression"))) Then
+            dvSort.Sort = Session("SortExpression").ToString() + " " + SortDirectionSql(Session("SortDirection").ToString())
         End If
 
         Me.gvResource.DataSource = dvSort
         Dim intIndex As Integer = 0
 
-        If Not IsNothing(ViewState("PageIndex")) Then
-            intIndex = CInt(ViewState("PageIndex"))
+        If Not IsNothing(Session("PageIndex")) Then
+            intIndex = CInt(Session("PageIndex"))
         End If
 
         Me.gvResource.PageSize = CInt(ddlDisplay.SelectedValue)
