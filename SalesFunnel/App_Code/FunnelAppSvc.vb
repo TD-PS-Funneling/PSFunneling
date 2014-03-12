@@ -432,5 +432,9 @@ Public Class FunnelAppSvc
         Dim talTest As New Teradata_Access_Layer
         Return talTest.GetDataSet("SELECT qlookid, last_name || ', ' || first_name || '  (' ||  qlookid || ')'  full_name  FROM FIHL_POC.resource_position_vw ORDER BY last_name, first_name;")
     End Function
-
+    <WebMethod()>
+    Public Function GetOpportunityTypeList() As DataSet
+        Dim talOpportunityList As New Teradata_Access_Layer
+        Return talOpportunityList.GetDataSet("SELECT * FROM FIHL_POC.util_opportunity_detail_type ORDER BY detail_type_id;")
+    End Function
 End Class

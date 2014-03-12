@@ -36,8 +36,8 @@ Partial Class Site
             mnuNavMenu.Items.Add(mnuitmNewLink1)
 
             Dim mnuitmNewLink2 As New MenuItem
-            mnuitmNewLink2.NavigateUrl = "~/Developer2.aspx"
-            mnuitmNewLink2.Text = "Developer-2"
+            mnuitmNewLink2.NavigateUrl = "~/OpportunityDetailType.aspx"
+            mnuitmNewLink2.Text = "Opportunity Detail Type"
             mnuNavMenu.Items.Add(mnuitmNewLink2)
 
             Dim mnuitmNewLink3 As New MenuItem
