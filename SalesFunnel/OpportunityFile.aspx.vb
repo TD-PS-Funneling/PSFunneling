@@ -38,8 +38,8 @@ Partial Class OpportunityFile
         Dim strDomain As String = strComponents(0)
         Dim strUserName As String = strComponents(1)
         If IsNothing(Session("strUserName")) Or IsNothing(Session("strTRUEUserName")) Then
-            Session("strUserName") = strUserName.ToUpper
-            Session("strTRUEUserName") = strUserName.ToUpper
+            Session("strUserName") = "BB125453" 'strUserName.ToUpper
+            Session("strTRUEUserName") = "BB125453" 'strUserName.ToUpper
         End If
 
 
@@ -446,16 +446,24 @@ Partial Class OpportunityFile
 
             Case "Add"
                 If ValidateAdd() Then
-                    intOpportunityResult = appService.AddOpportunity(Me.ddlCustomerEdit.SelectedValue, Me.txtOpportunityEdit.Text)
+                    intOpportunityResult = appService.AddOpportunityTemporal(Me.ddlCustomerEdit.SelectedValue, Me.txtOpportunityEdit.Text, Session("strUserName"))
+
                     If intOpportunityResult > 0 Then
                         Session("intOpportunity") = intOpportunityResult
 
-                        intOpportunityStateResult = appService.AddOpportunityState(intOpportunityResult, Me.calCloseDateEdit.SelectedDate, Me.txtPSValueEdit.Text, Me.ddlFunnelPhaseEdit.SelectedValue, Me.txtWinPercentEdit.Text, Me.ddlOpportunityStatusEdit.Text, Me.txtOpportunityCommentEdit.Text, Me.txtRevenueUpsideEdit.Text, Session("strUserName").ToString)
+                        intOpportunityStateResult = appService.AddOpportunityDetailTemporal(intOpportunityResult,
+                                                                                            Me.calCloseDateEdit.SelectedDate,
+                                                                                            Me.txtPSValueEdit.Text,
+                                                                                            Me.ddlFunnelPhaseEdit.SelectedValue,
+                                                                                            Me.txtWinPercentEdit.Text,
+                                                                                            Me.ddlOpportunityStatusEdit.Text,
+                                                                                            Me.txtOpportunityCommentEdit.Text,
+                                                                                            Me.txtRevenueUpsideEdit.Text,
+                                                                                            Session("strUserName"))
 
                         If intOpportunityStateResult > 0 Then
                             Session("intOpportunityState") = intOpportunityStateResult
-
-                            intOpportunityStateDetailResult = appService.AddOpportunityStateDetail(intOpportunityStateResult)
+                            intOpportunityStateDetailResult = appService.AddOpportunityStateDetailTemporal(Session("intOpportunityState"))
 
                             If Me.ddlOutlookStatusEdit.SelectedIndex <> 1 Then
                                 intOpportunityStateDetailResult = appService.SetOpportunityStateDetail2(11, Session("intOpportunity"), Me.ddlOutlookStatusEdit.SelectedValue, Session("strUserName"))
@@ -472,59 +480,103 @@ Partial Class OpportunityFile
                                 Session("strMode") = "View"
                                 PageMode()
                             End If
+
                         End If
                     End If
+
+                    'intOpportunityResult = appService.AddOpportunity(Me.ddlCustomerEdit.SelectedValue, Me.txtOpportunityEdit.Text)
+                    'If intOpportunityResult > 0 Then
+                    '    Session("intOpportunity") = intOpportunityResult
+
+                    '    intOpportunityStateResult = appService.AddOpportunityState(intOpportunityResult, Me.calCloseDateEdit.SelectedDate, Me.txtPSValueEdit.Text, Me.ddlFunnelPhaseEdit.SelectedValue, Me.txtWinPercentEdit.Text, Me.ddlOpportunityStatusEdit.Text, Me.txtOpportunityCommentEdit.Text, Me.txtRevenueUpsideEdit.Text, Session("strUserName").ToString)
+
+                    '    If intOpportunityStateResult > 0 Then
+                    '        Session("intOpportunityState") = intOpportunityStateResult
+
+                    '        intOpportunityStateDetailResult = appService.AddOpportunityStateDetail(intOpportunityStateResult)
+
+                    '        If Me.ddlOutlookStatusEdit.SelectedIndex <> 1 Then
+                    '            intOpportunityStateDetailResult = appService.SetOpportunityStateDetail2(11, Session("intOpportunity"), Me.ddlOutlookStatusEdit.SelectedValue, Session("strUserName"))
+                    '        End If
+                    '        If Me.ddlMPOverrideEdit.SelectedIndex <> 1 Then
+                    '            intOpportunityStateDetailResult = appService.SetOpportunityStateDetail2(12, Session("intOpportunity"), Me.ddlMPOverrideEdit.SelectedValue, Session("strUserName"))
+                    '        End If
+                    '        If Me.ddlOrderFlowEdit.SelectedIndex <> 1 Then
+                    '            intOpportunityStateDetailResult = appService.SetOpportunityStateDetail2(13, Session("intOpportunity"), Me.ddlOrderFlowEdit.SelectedValue, Session("strUserName"))
+                    '        End If
+
+                    '        If intOpportunityStateDetailResult > 0 Then
+                    '            Session("strModeLast") = Session("strMode")
+                    '            Session("strMode") = "View"
+                    '            PageMode()
+                    '        End If
+                    '    End If
+                    'End If
                 End If
             Case "Edit"
-                If ValidateAdd() Then
-                    Dim intOpportunityDelta As Integer = 0
-                    Dim intOpportunityStateDelta As Integer = 0
-                    Dim dtOpportunity As DataTable = Session("dtOpportunity")
+                    If ValidateAdd() Then
+                        'Dim intOpportunityDelta As Integer = 0
+                        'Dim intOpportunityStateDelta As Integer = 0
+                        Dim dtOpportunity As DataTable = Session("dtOpportunity")
+                        Dim bUpdateTable As Boolean = False
 
-                    If Me.txtOpportunityEdit.Text <> dtOpportunity.Rows.Item(0).Item("opportunity_desc") Then
-                        intOpportunityDelta += 1
+                        If Me.txtOpportunityEdit.Text <> dtOpportunity.Rows.Item(0).Item("opportunity_desc") Then
+                            bUpdateTable = True
+                        End If
+
+                        If Me.calCloseDateEdit.SelectedDate <> dtOpportunity.Rows.Item(0).Item("close_date") Then
+                            bUpdateTable = True
+                        End If
+
+                        If Me.txtPSValueEdit.Text <> dtOpportunity.Rows.Item(0).Item("ps_value_nbr") Then
+                            bUpdateTable = True
+                        End If
+
+                        If Me.ddlFunnelPhaseEdit.SelectedValue <> dtOpportunity.Rows.Item(0).Item("funnel_phase_id") Then
+                            bUpdateTable = True
+                        End If
+
+                        If Me.txtWinPercentEdit.Text <> dtOpportunity.Rows.Item(0).Item("win_percent") Then
+                            bUpdateTable = True
+                        End If
+
+                        If Me.ddlOpportunityStatusEdit.SelectedValue <> dtOpportunity.Rows.Item(0).Item("opportunity_status_id") Then
+                            bUpdateTable = True
+                        End If
+
+                        If Me.txtOpportunityCommentEdit.Text <> dtOpportunity.Rows.Item(0).Item("opportunity_comment_desc") Then
+                            bUpdateTable = True
+                        End If
+
+                        If Me.txtRevenueUpsideEdit.Text <> dtOpportunity.Rows.Item(0).Item("revenue_upside") Then
+                            bUpdateTable = True
+                        End If
+
+                        If bUpdateTable Then
+                            intResult = appService.SetOpportunityStateTemporalTable(Session("intOpportunity"),
+                                                                                    Me.txtPSValueEdit.Text,
+                                                                                    Me.calCloseDateEdit.SelectedDate,
+                                                                                    Me.ddlFunnelPhaseEdit.SelectedValue,
+                                                                                    Me.txtWinPercentEdit.Text,
+                                                                                    Me.txtRevenueUpsideEdit.Text,
+                                                                                    Me.ddlOpportunityStatusEdit.SelectedValue,
+                                                                                    Session("intOpportunityState"),
+                                                                                    Me.txtOpportunityCommentEdit.Text,
+                                                                                    Session("strUserName"))
+
+                        intOpportunityStateDetailResult = appService.SetOpportunityStateDetail2(11, Session("intOpportunity"), Me.ddlOutlookStatusEdit.SelectedValue, Session("strUserName"))
+
+                        intOpportunityStateDetailResult = appService.SetOpportunityStateDetail2(12, Session("intOpportunity"), Me.ddlMPOverrideEdit.SelectedValue, Session("strUserName"))
+
+                        intOpportunityStateDetailResult = appService.SetOpportunityStateDetail2(13, Session("intOpportunity"), Me.ddlOrderFlowEdit.SelectedValue, Session("strUserName"))
+
                     End If
-                    If Me.calCloseDateEdit.SelectedDate <> dtOpportunity.Rows.Item(0).Item("close_date") Then
-                        intOpportunityStateDelta += 1
+
+                        Session("strModeLast") = Session("strMode")
+                        Session("strMode") = "View"
+                        PageMode()
+
                     End If
-                    If Me.txtPSValueEdit.Text <> dtOpportunity.Rows.Item(0).Item("ps_value_nbr") Then
-                        intOpportunityStateDelta += 1
-                    End If
-                    If Me.ddlFunnelPhaseEdit.SelectedValue <> dtOpportunity.Rows.Item(0).Item("funnel_phase_id") Then
-                        intOpportunityStateDelta += 1
-                    End If
-                    If Me.txtWinPercentEdit.Text <> dtOpportunity.Rows.Item(0).Item("win_percent") Then
-                        intOpportunityStateDelta += 1
-                    End If
-                    If Me.ddlOpportunityStatusEdit.SelectedValue <> dtOpportunity.Rows.Item(0).Item("opportunity_status_id") Then
-                        intOpportunityStateDelta += 1
-                    End If
-                    If Me.txtOpportunityCommentEdit.Text <> dtOpportunity.Rows.Item(0).Item("opportunity_comment_desc") Then
-                        intOpportunityStateDelta += 1
-                    End If
-                    If Me.txtRevenueUpsideEdit.Text <> dtOpportunity.Rows.Item(0).Item("revenue_upside") Then
-                        intOpportunityStateDelta += 1
-                    End If
-
-
-                    If intOpportunityStateDelta > 0 Then
-                        intResult = appService.SetOpportunityState(Session("intOpportunityState"), Session("intOpportunity"), Me.calCloseDateEdit.SelectedDate, Me.txtPSValueEdit.Text, Me.ddlFunnelPhaseEdit.SelectedValue, Me.txtWinPercentEdit.Text, Me.ddlOpportunityStatusEdit.SelectedValue, Me.txtOpportunityCommentEdit.Text, Me.txtRevenueUpsideEdit.Text, Session("strUserName"))
-                    End If
-
-
-                    intOpportunityStateDetailResult = appService.SetOpportunityStateDetail2(11, Session("intOpportunity"), Me.ddlOutlookStatusEdit.SelectedValue, Session("strUserName"))
-
-                    intOpportunityStateDetailResult = appService.SetOpportunityStateDetail2(12, Session("intOpportunity"), Me.ddlMPOverrideEdit.SelectedValue, Session("strUserName"))
-
-                    intOpportunityStateDetailResult = appService.SetOpportunityStateDetail2(13, Session("intOpportunity"), Me.ddlOrderFlowEdit.SelectedValue, Session("strUserName"))
-
-
-
-                    Session("strModeLast") = Session("strMode")
-                    Session("strMode") = "View"
-                    PageMode()
-
-                End If
         End Select
     End Sub
 

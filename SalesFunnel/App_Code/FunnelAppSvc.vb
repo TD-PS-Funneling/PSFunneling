@@ -22,7 +22,7 @@ Public Class FunnelAppSvc
     Public Function GetCustomerFilter() As DataSet
         Dim dtReturn As New DataSet
         Dim dService As New FunnelDataSvc
-        dtReturn = dService.GetDataSetSQL("SELECT customer_name FROM FIHL_POC.Funnel_vw group by 1 order by 1;")
+        dtReturn = dService.GetDataSetSQL("SELECT customer_name FROM FIHL_POC.Funnel_vw_temp group by 1 order by 1;")
         Return dtReturn
     End Function
 
@@ -30,7 +30,7 @@ Public Class FunnelAppSvc
     Public Function GetMPartnerFilter() As DataSet
         Dim dtReturn As New DataSet
         Dim dService As New FunnelDataSvc
-        dtReturn = dService.GetDataSetSQL("SELECT mpr_last_name FROM FIHL_POC.Funnel_vw group by 1 order by 1;")
+        dtReturn = dService.GetDataSetSQL("SELECT mpr_last_name FROM FIHL_POC.Funnel_vw_temp group by 1 order by 1;")
         Return dtReturn
     End Function
 
@@ -38,7 +38,7 @@ Public Class FunnelAppSvc
     Public Function GetPSPartnerFilter() As DataSet
         Dim dtReturn As New DataSet
         Dim dService As New FunnelDataSvc
-        dtReturn = dService.GetDataSetSQL("SELECT psp_last_name FROM FIHL_POC.Funnel_vw group by 1 order by 1;")
+        dtReturn = dService.GetDataSetSQL("SELECT psp_last_name FROM FIHL_POC.Funnel_vw_temp group by 1 order by 1;")
         Return dtReturn
     End Function
 
@@ -46,7 +46,7 @@ Public Class FunnelAppSvc
     Public Function GetAreaFilter() As DataSet
         Dim dtReturn As New DataSet
         Dim dService As New FunnelDataSvc
-        dtReturn = dService.GetDataSetSQL("SELECT organization_struct_name FROM FIHL_POC.Funnel_vw group by 1 order by 1;")
+        dtReturn = dService.GetDataSetSQL("SELECT organization_struct_name FROM FIHL_POC.Funnel_vw_temp group by 1 order by 1;")
         Return dtReturn
     End Function
 
@@ -54,7 +54,7 @@ Public Class FunnelAppSvc
     Public Function GetFunnelFilter() As DataSet
         Dim dtReturn As New DataSet
         Dim dService As New FunnelDataSvc
-        dtReturn = dService.GetDataSetSQL("SELECT funnel_phase_short_name FROM FIHL_POC.Funnel_vw group by 1 order by 1;")
+        dtReturn = dService.GetDataSetSQL("SELECT funnel_phase_short_name FROM FIHL_POC.Funnel_vw_temp group by 1 order by 1;")
         Return dtReturn
     End Function
 
@@ -62,7 +62,7 @@ Public Class FunnelAppSvc
     Public Function GetOpportunityList() As DataSet
         Dim dtReturn As New DataSet
         Dim dService As New FunnelDataSvc
-        dtReturn = dService.GetDataSetSQL("SELECT * FROM FIHL_POC.Funnel_vw ORDER BY 1;")
+        dtReturn = dService.GetDataSetSQL("SELECT * FROM FIHL_POC.Funnel_vw_temp ORDER BY 1;")
         Return dtReturn
     End Function
 
@@ -106,7 +106,7 @@ Public Class FunnelAppSvc
     Public Function GetOpportunity(intOpportunityID As Integer) As DataSet
         Dim talTest As New Teradata_Access_Layer
         If intOpportunityID <> vbNull And intOpportunityID > 0 Then
-            Return talTest.GetDataSet("SELECT * FROM FIHL_POC.opportunity_vw WHERE opportunity_id=" & intOpportunityID.ToString & ";")
+            Return talTest.GetDataSet("SELECT * FROM FIHL_POC.opportunity_vw_temp WHERE opportunity_id=" & intOpportunityID.ToString & ";")
         Else
             Return talTest.GetDataSet("")
         End If
@@ -117,7 +117,8 @@ Public Class FunnelAppSvc
     Public Function GetOpportunityDetails(intOpportunityID As Integer) As DataSet
         Dim talTest As New Teradata_Access_Layer
         If intOpportunityID <> Microsoft.VisualBasic.vbNull And intOpportunityID > 0 Then
-            Return talTest.GetDataSet("SELECT * FROM FIHL_POC.opportunity_state_detail WHERE opportunity_id=" & intOpportunityID.ToString & ";")
+            'Return talTest.GetDataSet("SELECT * FROM FIHL_POC.opportunity_state_detail WHERE opportunity_id=" & intOpportunityID.ToString & ";")
+            Return talTest.GetDataSet("SELECT * FROM FIHL_POC.opportunity_state_detail_temp WHERE opportunity_id=" & intOpportunityID.ToString & ";")
         Else
             Return talTest.GetDataSet("")
         End If
@@ -127,7 +128,8 @@ Public Class FunnelAppSvc
     <WebMethod()> _
     Public Function GetOpportunityDetail(intOpportunityStateID As Integer) As DataSet
         Dim talTest As New Teradata_Access_Layer
-        Return talTest.GetDataSet("SELECT * FROM FIHL_POC.opportunity_state_detail_vw WHERE opportunity_state_id=" & intOpportunityStateID.ToString & " ORDER BY detail_type_sort_nbr;")
+        'Return talTest.GetDataSet("SELECT * FROM FIHL_POC.opportunity_state_detail_vw WHERE opportunity_state_id=" & intOpportunityStateID.ToString & " ORDER BY detail_type_sort_nbr;")
+        Return talTest.GetDataSet("SELECT * FROM FIHL_POC.opp_state_detail_vw_temp WHERE opportunity_state_id=" & intOpportunityStateID.ToString & " ORDER BY detail_type_sort_nbr;")
     End Function
 
     <WebMethod()> _
@@ -153,7 +155,8 @@ Public Class FunnelAppSvc
     <WebMethod()> _
     Public Function GetOpportunityDetailList(intOpportunityStateDetailID As Integer) As DataSet
         Dim talTest As New Teradata_Access_Layer
-        Return talTest.GetDataSet("SELECT * FROM FIHL_POC.opportunity_state_value_vw WHERE opportunity_state_detail_id=" & intOpportunityStateDetailID.ToString & "  ORDER BY detail_value_sort_nbr;")
+        'Return talTest.GetDataSet("SELECT * FROM FIHL_POC.opportunity_state_value_vw WHERE opportunity_state_detail_id=" & intOpportunityStateDetailID.ToString & "  ORDER BY detail_value_sort_nbr;")
+        Return talTest.GetDataSet("SELECT * FROM FIHL_POC.opp_state_value_vw_temp WHERE opportunity_state_detail_id=" & intOpportunityStateDetailID.ToString & "  ORDER BY detail_value_sort_nbr;")
     End Function
 
     <WebMethod()> _
@@ -241,14 +244,101 @@ Public Class FunnelAppSvc
     Public Function GetNextOpportunityID() As Integer
         Dim intOpportunityID As Integer = 0
         Dim talTest As New Teradata_Access_Layer
-        Dim dsNextOpportunityID As DataSet = talTest.GetDataSet("SELECT MAX(COALESCE(opportunity_id,0))+1 next_opportunity_id FROM FIHL_POC.opportunity;")
+        Dim dsNextOpportunityID As DataSet = talTest.GetDataSet("SELECT MAX(COALESCE(opportunity_id,0))+1 next_opportunity_id FROM FIHL_POC.opportunity_temp;")
+        'Dim dsNextOpportunityID As DataSet = talTest.GetDataSet("SELECT MAX(COALESCE(opportunity_id,0))+1 next_opportunity_id FROM FIHL_POC.opportunity;")
         If Not IsNothing(dsNextOpportunityID) Then
             intOpportunityID = dsNextOpportunityID.Tables(0).Rows(0).Item(0)
         End If
         Return intOpportunityID
     End Function
     <WebMethod()> _
+    Public Function GetNextOpportunityStateDetailID() As Integer
+        Dim nOpportunityDetailID As Integer = 0
+        Dim talTest As New Teradata_Access_Layer
+        Dim dsNextOpportunityDetailID As DataSet = talTest.GetDataSet("SELECT MAX(COALESCE(opportunity_state_detail_id,0))+1 next_id  FROM FIHL_POC.opportunity_state_detail_temp;")
+        'Dim dsNextOpportunityDetailID As DataSet = talTest.GetDataSet("SELECT MAX(COALESCE(opportunity_state_detail_id,0))+1 next_id  FROM FIHL_POC.opportunity_state_detail;")
+        If Not IsNothing(dsNextOpportunityDetailID) Then
+            nOpportunityDetailID = dsNextOpportunityDetailID.Tables(0).Rows(0).Item(0)
+        End If
+        Return nOpportunityDetailID
+    End Function
+    <WebMethod()> _
+    Public Function AddOpportunityDetailTemporal(nOpportunityID As Integer,
+                                                 strCloseDate As String,
+                                                 nPSValue As Integer,
+                                                 strFunnelPhaseID As Integer,
+                                                 nWinPercent As Integer,
+                                                 nOpportunityStatusID As Integer,
+                                                 strOpportunityDesc As String,
+                                                 nRevenueUpside As Integer,
+                                                 strQlid As String) As Integer
+        Dim nResult As Integer = 0
+        Dim nOpportunityStateID As Integer
+        Dim strQuery As String = ""
+        Dim talObject As New Teradata_Access_Layer
+
+        nOpportunityStateID = GetNextOpportunityStateDetailID()
+
+        strQuery += "CALL SP_OPPORTUNITY_STATE_UPSERT ("
+        strQuery += "oMESSAGE, "
+        strQuery += "" & nOpportunityStateID & ", "
+        strQuery += "" & nOpportunityID & ", "
+        strQuery += "" & strCloseDate & ", "
+        strQuery += "" & nPSValue & ", "
+        strQuery += "'" & strFunnelPhaseID & "', "
+        strQuery += "" & nWinPercent & ", "
+        strQuery += "" & nOpportunityStatusID & ", "
+        strQuery += "'" & strOpportunityDesc & "', "
+        strQuery += "" & nRevenueUpside & ", "
+        strQuery += "'', "
+        strQuery += "'', "
+        strQuery += "'" & strQlid & "'"
+        strQuery += ")"
+
+        nResult = talObject.ExecSQLScalar(strQuery)
+
+        Return nResult
+    End Function
+
+    <WebMethod()> _
+    Public Function AddOpportunityTemporal(nCustomerID As Integer, strOpportunityDesc As String, strQlid As String) As Integer
+        Dim nResult As Integer = -1
+        Dim strQuery As String = ""
+        Dim nOpportunityID = GetNextOpportunityID()
+        Dim nTeamID = GetAccountTeamID(strQlid)
+        Dim talObject As New Teradata_Access_Layer
+
+        strQuery += "CALL SP_OPPORTUNITY_UPSERT ("
+        strQuery += "oMESSAGE,"
+        strQuery += "" & nOpportunityID & ","
+        strQuery += "" & nCustomerID & ","
+        strQuery += "" & nTeamID & ","
+        strQuery += "'" & strOpportunityDesc & "',"
+        strQuery += "''"
+        strQuery += ")"
+
+        nResult = talObject.ExecSQLScalar(strQuery)
+
+        Return nResult
+    End Function
+    <WebMethod()> _
+    Public Function GetAccountTeamID(strQlid As String) As Integer
+        Dim nAccountTeamID As Integer
+        Dim strQuery As String = ""
+        Dim talObject As New Teradata_Access_Layer
+
+        strQuery += "Select atp.account_team_id "
+        strQuery += "from resource_position rp "
+        strQuery += "inner join account_team_position atp  on atp.organization_position_id = rp.organization_position_id "
+        strQuery += "where rp.qlookid =  '" & strQlid & "'"
+
+        nAccountTeamID = talObject.ExecSQLScalar(strQuery)
+
+        Return nAccountTeamID
+    End Function
+    <WebMethod()> _
     Public Function AddOpportunity(intCustomerID As Integer, strOpportunityDesc As String) As Integer
+        ' NO LONGER USED FOR OpportunityFile.aspx
         Dim intResult As Integer = -1
         Dim intOpportunityID As Integer = GetNextOpportunityID()
         Dim strSQL As String = "INSERT INTO FIHL_POC.opportunity VALUES(" & intOpportunityID.ToString & ", " & intCustomerID.ToString & ", -1, '" & strOpportunityDesc & "', PERIOD(DATE, UNTIL_CHANGED));"
@@ -263,7 +353,8 @@ Public Class FunnelAppSvc
     Public Function GetNextOpportunityStateID() As Integer
         Dim intOpportunityStateID As Integer = 0
         Dim talTest As New Teradata_Access_Layer
-        Dim dsNextOpportunityStateID As DataSet = talTest.GetDataSet("SELECT MAX(COALESCE(opportunity_state_id,0))+1 next_opportunity_state_id FROM FIHL_POC.opportunity_state;")
+        Dim dsNextOpportunityStateID As DataSet = talTest.GetDataSet("SELECT MAX(COALESCE(opportunity_state_id,0))+1 next_opportunity_state_id FROM FIHL_POC.opportunity_state_temp;")
+        'Dim dsNextOpportunityStateID As DataSet = talTest.GetDataSet("SELECT MAX(COALESCE(opportunity_state_id,0))+1 next_opportunity_state_id FROM FIHL_POC.opportunity_state;")
         If Not IsNothing(dsNextOpportunityStateID) Then
             intOpportunityStateID = dsNextOpportunityStateID.Tables(0).Rows(0).Item(0)
         End If
@@ -284,12 +375,9 @@ Public Class FunnelAppSvc
 
         Return intResult
     End Function
-
-
-
-
     <WebMethod()> _
     Public Function AddOpportunityState(intOpportunityID As Integer, dtClose As Date, intPSValue As Integer, intFunnelPhaseID As Integer, bytWinPercent As Byte, bytOpportunityStatusID As Byte, strOpportunityComment As String, intRevenueUpside As Integer, strQuicklookID As String) As Integer
+        ' NO LONGER USED FOR OpportunityFile.aspx
         Dim intResult As Integer = -1
         Dim intOpportunityStateID As Integer = GetNextOpportunityStateID()
         Dim strSQL As String = "INSERT INTO FIHL_POC.opportunity_state VALUES(" & intOpportunityStateID.ToString & ", " & intOpportunityID.ToString & ", DATE'" & Format(dtClose, "yyyy-MM-dd") & "', " & intPSValue.ToString & ", " & intFunnelPhaseID.ToString & ", " & bytWinPercent.ToString & ", " & bytOpportunityStatusID.ToString & ", '" & strOpportunityComment & "'," & intRevenueUpside.ToString & ", PERIOD(DATE, UNTIL_CHANGED), '" & Format(Now, "HH:mm:ss").ToString & "', '" & strQuicklookID & "');"
@@ -299,10 +387,62 @@ Public Class FunnelAppSvc
 
         Return (intResult * intOpportunityStateID)
     End Function
+    <WebMethod()> _
+    Public Function AddOpportunityStateDetailTemporal(nOpportunityStateID As Integer) As Integer
+        Dim nResult As Integer = 0
+        Dim strQuery As String = ""
+        Dim talTest As New Teradata_Access_Layer
+        Dim ds As DataSet
+        Dim dt As DataTable
+        Dim strSQL As String = ""
+        strSQL += " SELECT ROW_NUMBER() OVER(PARTITION BY 1 ORDER BY ODT.detail_type_id) + NXT.opportunity_state_detail_id, OST.opportunity_state_id, OST.opportunity_id, "
+        strSQL += " ODT.detail_type_id, ODT.detail_type_id * -1, NULL, CURRENT_DATE, DATE'9999-12-31', OST.update_time, OST.update_qlookid "
+        strSQL += " FROM FIHL_POC.opportunity_state_temp OST "
+        'strSQL += " FROM FIHL_POC.opportunity_state OST "
+        strSQL += " INNER JOIN FIHL_POC.util_opportunity_detail_type ODT ON 1=1 "
+        strSQL += " INNER JOIN (SELECT MAX(COALESCE(opportunity_state_detail_id,0)) opportunity_state_detail_id FROM FIHL_POC.opportunity_state_detail_temp) NXT ON 1=1 "
+        'strSQL += " INNER JOIN (SELECT MAX(COALESCE(opportunity_state_detail_id,0)) opportunity_state_detail_id FROM FIHL_POC.opportunity_state_detail) NXT ON 1=1 "
+        strSQL += " WHERE OST.opportunity_state_id=" & nOpportunityStateID.ToString & ";"
 
+        ds = talTest.GetDataSet(strSQL)
+
+        dt = ds.Tables(0)
+
+        For index = 0 To dt.Rows.Count - 1
+            nResult = 0
+            strQuery += ""
+            strQuery += "CALL SP_OPP_STATE_DETAIL_UPSERT ( "
+            strQuery += "oMESSAGE, "
+            strQuery += "" & Convert.ToInt32(dt.Rows(index)(0).ToString) & ", "
+            strQuery += "" & Convert.ToInt32(dt.Rows(index)(1).ToString) & ", "
+            strQuery += "" & Convert.ToInt32(dt.Rows(index)(2).ToString) & ", "
+            strQuery += "" & Convert.ToInt32(dt.Rows(index)(3).ToString) & ", "
+            strQuery += "" & Convert.ToInt32(dt.Rows(index)(4).ToString) & ", "
+            strQuery += "'" & dt.Rows(index)(5).ToString & "', "
+            strQuery += "" & GetDateFromString(dt.Rows(index)(6).ToString) & ", "
+            strQuery += "" & GetDateFromString(dt.Rows(index)(7).ToString) & ", "
+            strQuery += "'" & dt.Rows(index)(8).ToString & "', "
+            strQuery += "'" & dt.Rows(index)(9).ToString & "'"
+            strQuery += ")"
+
+            nResult = talTest.ExecSQLScalar(strQuery)
+        Next
+
+        Return nResult
+    End Function
+    Private Function GetDateFromString(strDate As String) As String
+        Dim strReturnDate As String = ""
+        Dim strTemp As String()
+
+        strTemp = strDate.Split(New Char() {" "c})
+        strReturnDate = strTemp(0).ToString
+
+        Return strReturnDate
+    End Function
 
     <WebMethod()> _
     Public Function AddOpportunityStateDetail(intOpportunityStateID As Integer) As Integer
+        ' NO LONGER USED FOR OpportunityFile.aspx
         Dim talTest As New Teradata_Access_Layer
         Dim intResult As Integer = -1
         Dim strSQL As String = "INSERT INTO FIHL_POC.opportunity_state_detail "
@@ -320,6 +460,7 @@ Public Class FunnelAppSvc
 
     <WebMethod()> _
     Public Function SetOpportunity(intOpportunityID As Integer, intCustomerID As Integer, intAccountTeamID As Integer, strOpportunityDesc As String) As Integer
+        ' NO LONGER USED FOR OpportunityFile.aspx
         Dim talTest As New Teradata_Access_Layer
         Dim intResult As Integer = -1
         Dim strSQL As String = "UPDATE FIHL_POC.opportunity "
@@ -334,6 +475,7 @@ Public Class FunnelAppSvc
 
     <WebMethod()> _
     Public Function SetOpportunityState(intOpportunityStateID As Integer, intOpportunityID As Integer, dtClose As Date, intPSValue As Integer, intFunnelPhaseID As Integer, bytWinPercent As Byte, intOpportunityStatusID As Integer, strOpportunityDesc As String, intRevenueUpside As Integer, strQuicklookID As String) As Integer
+        ' NO LONGER USED FOR OpportunityFile.aspx
         Dim talTest As New Teradata_Access_Layer
         Dim intResult As Integer = -1
         Dim strSQL As String = "UPDATE FIHL_POC.opportunity_state "
@@ -352,14 +494,49 @@ Public Class FunnelAppSvc
 
         Return intResult
     End Function
+    <WebMethod()> _
+    Public Function SetOpportunityStateTemporalTable(nOpportunityID As Integer,
+                                                    nPSValueNbr As Integer,
+                                                    strCloseDate As String,
+                                                    nFunnelPhaseID As Integer,
+                                                    dWinPercent As Double,
+                                                    nRevenueUpside As Integer,
+                                                    nOpportunityStatusID As Integer,
+                                                    nOpportunityStateID As Integer,
+                                                    strOpportunityCommentDesc As String,
+                                                    strQuickLookID As String) As Integer
+        Dim nResult As Integer = -1
+        Dim tal As New Teradata_Access_Layer
+        Dim strQuery As String = ""
 
+        strQuery += "CALL SP_OPP_STATE_TEMP_MERGE "
+        strQuery += "(oMESSAGE,"
+        strQuery += "" & nOpportunityStateID & ","
+        strQuery += "" & nOpportunityID & ","
+        strQuery += "" & strCloseDate & ","
+        strQuery += "" & nPSValueNbr & ","
+        strQuery += "" & nFunnelPhaseID & ","
+        strQuery += "" & dWinPercent & ","
+        strQuery += "" & nOpportunityStatusID & ","
+        strQuery += "'" & strOpportunityCommentDesc & "',"
+        strQuery += "" & nRevenueUpside & ","
+        strQuery += "'',"
+        strQuery += "'',"
+        strQuery += "'" & strQuickLookID & "'"
+        strQuery += ")"
+
+        nResult = tal.ExecSQL(strQuery)
+
+        Return nResult
+    End Function
 
 
     <WebMethod()> _
     Public Function SetOpportunityStateDetail(intOpportunityStateDetailID As Integer, intOpportunityID As Integer, intValue As Integer, strQuicklookID As String) As Integer
         Dim talTest As New Teradata_Access_Layer
         Dim intResult As Integer = -1
-        Dim strSQL As String = "UPDATE FIHL_POC.opportunity_state_detail "
+        'Dim strSQL As String = "UPDATE FIHL_POC.opportunity_state_detail "
+        Dim strSQL As String = "UPDATE FIHL_POC.opportunity_state_detail_temp "
         strSQL += " SET detail_value_id=" & intValue.ToString & ", "
         strSQL += " update_time= '" & Format(Now, "HH:mm:ss").ToString & "', "
         strSQL += " update_qlookid='" & strQuicklookID & "' "
@@ -374,13 +551,24 @@ Public Class FunnelAppSvc
     Public Function SetOpportunityStateDetail2(intDetailTypeID As Integer, intOpportunityID As Integer, intValue As Integer, strQuicklookID As String) As Integer
         Dim talTest As New Teradata_Access_Layer
         Dim intResult As Integer = -1
-        Dim strSQL As String = "UPDATE FIHL_POC.opportunity_state_detail "
-        strSQL += " SET detail_value_id=" & intValue.ToString & ", "
-        strSQL += " update_time= '" & Format(Now, "HH:mm:ss").ToString & "', "
-        strSQL += " update_qlookid='" & strQuicklookID & "' "
-        strSQL += " WHERE detail_type_id=" & intDetailTypeID.ToString & " AND opportunity_id=" & intOpportunityID.ToString & " AND end_date= DATE '9999-12-31';"
+        Dim strSQL As String = ""
 
-        intResult = talTest.ExecSQL(strSQL)
+        strSQL += "CALL SP_OPP_STATE_DTL_TEMP_UPDATE ("
+        strSQL += "oMESSAGE, "
+        strSQL += "" & intOpportunityID & ", "
+        strSQL += "" & intDetailTypeID & ", "
+        strSQL += "" & intValue & ", "
+        strSQL += "'" & strQuicklookID & "'"
+        strSQL += ")"
+
+        intResult = talTest.ExecSQLScalar(strSQL)
+        'Dim strSQL As String = "UPDATE FIHL_POC.opportunity_state_detail "
+        'strSQL += " SET detail_value_id=" & intValue.ToString & ", "
+        'strSQL += " update_time= '" & Format(Now, "HH:mm:ss").ToString & "', "
+        'strSQL += " update_qlookid='" & strQuicklookID & "' "
+        'strSQL += " WHERE detail_type_id=" & intDetailTypeID.ToString & " AND opportunity_id=" & intOpportunityID.ToString & " AND end_date= DATE '9999-12-31';"
+
+        'intResult = talTest.ExecSQL(strSQL)
 
         Return intResult
     End Function
