@@ -38,8 +38,8 @@ Partial Class OpportunityFile
         Dim strDomain As String = strComponents(0)
         Dim strUserName As String = strComponents(1)
         If IsNothing(Session("strUserName")) Or IsNothing(Session("strTRUEUserName")) Then
-            Session("strUserName") = "BB125453" 'strUserName.ToUpper
-            Session("strTRUEUserName") = "BB125453" 'strUserName.ToUpper
+            Session("strUserName") = strUserName.ToUpper
+            Session("strTRUEUserName") = strUserName.ToUpper
         End If
 
 
