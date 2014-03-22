@@ -110,7 +110,20 @@ Public Class Teradata_Access_Layer
         End If
         Return dsTD
     End Function
+    Public Function ExecSQLScalar(ByVal strSQL As String) As Integer
+        Dim intResult As Integer = -1
 
+        If GetCharacterCount(strSQL, ";") <= 1 Then
+            Dim cmdTD As New TdCommand(strSQL, cnTD)
+            Try
+                OpenConn()
+                intResult = cmdTD.ExecuteScalar()
+                CloseConn()
+            Catch ex As Exception
+            End Try
+        End If
+        Return intResult
+    End Function
 
 
     Public Function ExecSQL(ByVal strSQL As String) As Integer
