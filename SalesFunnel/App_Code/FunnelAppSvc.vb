@@ -207,6 +207,28 @@ Public Class FunnelAppSvc
         Return intResult
 
     End Function
+    <WebMethod()>
+    Public Function DelUtilOppDetail(ResourceID As String) As Integer
+        Dim intResult As Integer = -1
+        Dim cmd As New TdCommand
+        Dim talTest As New Teradata_Access_Layer
+        Dim intResourceID As Long
+
+        Long.TryParse(ResourceID, intResourceID)
+        cmd.CommandText = "FIHL_POC.SP_UTIL_OPP_DETAIL_TYPE_DELETE"
+        cmd.CommandType = CommandType.StoredProcedure
+
+        cmd.Parameters.Add("oMessage", TdType.Integer)
+        cmd.Parameters.Add("iDETAIL_TYPE_ID", TdType.Integer)
+
+        cmd.Parameters("oMessage").Direction = ParameterDirection.Output
+        cmd.Parameters("iDETAIL_TYPE_ID").Value = intResourceID
+
+        intResult = intResult + talTest.ExecCmd(cmd)
+
+        Return intResult
+
+    End Function
 
     <WebMethod()> _
     Public Function InHierarchy(intOrganizationStructID As Long, intCustomerID As Long) As DataSet
@@ -308,7 +330,7 @@ Public Class FunnelAppSvc
         Dim nTeamID = GetAccountTeamID(strQlid)
         Dim talObject As New Teradata_Access_Layer
 
-        strQuery += "CALL SP_OPPORTUNITY_UPSERT ("
+        strQuery += "CALL SP_OPPORTUNITY_TEMP_MERGE ("
         strQuery += "oMESSAGE,"
         strQuery += "" & nOpportunityID & ","
         strQuery += "" & nCustomerID & ","
@@ -508,12 +530,17 @@ Public Class FunnelAppSvc
         Dim nResult As Integer = -1
         Dim tal As New Teradata_Access_Layer
         Dim strQuery As String = ""
+        Dim nMpPsValueNbr As Integer = 0
+
+        If nPSValueNbr <> 0 Then
+            nMpPsValueNbr = nPSValueNbr
+        End If
 
         strQuery += "CALL SP_OPP_STATE_TEMP_MERGE "
         strQuery += "(oMESSAGE,"
         strQuery += "" & nOpportunityStateID & ","
         strQuery += "" & nOpportunityID & ","
-        strQuery += "" & strCloseDate & ","
+        strQuery += "DATE '" & strCloseDate & "',"
         strQuery += "" & nPSValueNbr & ","
         strQuery += "" & nFunnelPhaseID & ","
         strQuery += "" & dWinPercent & ","
@@ -522,10 +549,11 @@ Public Class FunnelAppSvc
         strQuery += "" & nRevenueUpside & ","
         strQuery += "'',"
         strQuery += "'',"
-        strQuery += "'" & strQuickLookID & "'"
+        strQuery += "'" & strQuickLookID & "',"
+        strQuery += "'" & nMpPsValueNbr & "'"
         strQuery += ")"
 
-        nResult = tal.ExecSQL(strQuery)
+        nResult = tal.ExecSQLScalar(strQuery)
 
         Return nResult
     End Function
