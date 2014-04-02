@@ -38,8 +38,8 @@ Partial Class OpportunityFile
         Dim strDomain As String = strComponents(0)
         Dim strUserName As String = strComponents(1)
         If IsNothing(Session("strUserName")) Or IsNothing(Session("strTRUEUserName")) Then
-            Session("strUserName") = strUserName.ToUpper
-            Session("strTRUEUserName") = strUserName.ToUpper
+            Session("strUserName") = "BB125453" 'strUserName.ToUpper
+            Session("strTRUEUserName") = "BB125453" 'strUserName.ToUpper
         End If
 
 
@@ -451,19 +451,30 @@ Partial Class OpportunityFile
                     If intOpportunityResult > 0 Then
                         Session("intOpportunity") = intOpportunityResult
 
-                        intOpportunityStateResult = appService.AddOpportunityDetailTemporal(intOpportunityResult,
-                                                                                            Me.calCloseDateEdit.SelectedDate,
-                                                                                            Me.txtPSValueEdit.Text,
-                                                                                            Me.ddlFunnelPhaseEdit.SelectedValue,
-                                                                                            Me.txtWinPercentEdit.Text,
-                                                                                            Me.ddlOpportunityStatusEdit.Text,
-                                                                                            Me.txtOpportunityCommentEdit.Text,
-                                                                                            Me.txtRevenueUpsideEdit.Text,
-                                                                                            Session("strUserName"))
+                        'intOpportunityStateResult = appService.AddOpportunityDetailTemporal(intOpportunityResult,
+                        '                                                                    Me.calCloseDateEdit.SelectedDate,
+                        '                                                                    Me.txtPSValueEdit.Text,
+                        '                                                                    Me.ddlFunnelPhaseEdit.SelectedValue,
+                        '                                                                    Me.txtWinPercentEdit.Text,
+                        '                                                                    Me.ddlOpportunityStatusEdit.Text,
+                        '                                                                    Me.txtOpportunityCommentEdit.Text,
+                        '                                                                    Me.txtRevenueUpsideEdit.Text,
+                        '                                                                    Session("strUserName"))
+
+                        intOpportunityStateResult = appService.SetOpportunityStateTemporalTable(intOpportunityResult,
+                                                                                                Me.txtPSValueEdit.Text,
+                                                                                                Me.calCloseDateEdit.SelectedDate.ToString("yyyy-MM-dd"),
+                                                                                                Me.ddlFunnelPhaseEdit.SelectedValue,
+                                                                                                Me.txtWinPercentEdit.Text,
+                                                                                                Me.txtRevenueUpsideEdit.Text,
+                                                                                                Me.ddlOpportunityStatusEdit.Text,
+                                                                                                -1,
+                                                                                                Me.txtOpportunityCommentEdit.Text,
+                                                                                                Session("strUserName"))
 
                         If intOpportunityStateResult > 0 Then
                             Session("intOpportunityState") = intOpportunityStateResult
-                            intOpportunityStateDetailResult = appService.AddOpportunityStateDetailTemporal(Session("intOpportunityState"))
+                            'intOpportunityStateDetailResult = appService.AddOpportunityStateDetailTemporal(Session("intOpportunityState"))
 
                             If Me.ddlOutlookStatusEdit.SelectedIndex <> 1 Then
                                 intOpportunityStateDetailResult = appService.SetOpportunityStateDetail2(11, Session("intOpportunity"), Me.ddlOutlookStatusEdit.SelectedValue, Session("strUserName"))
@@ -478,6 +489,10 @@ Partial Class OpportunityFile
                             If intOpportunityStateDetailResult > 0 Then
                                 Session("strModeLast") = Session("strMode")
                                 Session("strMode") = "View"
+                                PageMode()
+                            Else
+                                Session("strModeLast") = Session("strMode")
+                                Session("strMode") = "Main"
                                 PageMode()
                             End If
 
@@ -530,7 +545,7 @@ Partial Class OpportunityFile
 
                         If Me.txtPSValueEdit.Text <> dtOpportunity.Rows.Item(0).Item("ps_value_nbr") Then
                             bUpdateTable = True
-                        End If
+                    End If
 
                         If Me.ddlFunnelPhaseEdit.SelectedValue <> dtOpportunity.Rows.Item(0).Item("funnel_phase_id") Then
                             bUpdateTable = True
@@ -553,16 +568,16 @@ Partial Class OpportunityFile
                         End If
 
                         If bUpdateTable Then
-                            intResult = appService.SetOpportunityStateTemporalTable(Session("intOpportunity"),
-                                                                                    Me.txtPSValueEdit.Text,
-                                                                                    Me.calCloseDateEdit.SelectedDate,
-                                                                                    Me.ddlFunnelPhaseEdit.SelectedValue,
-                                                                                    Me.txtWinPercentEdit.Text,
-                                                                                    Me.txtRevenueUpsideEdit.Text,
-                                                                                    Me.ddlOpportunityStatusEdit.SelectedValue,
-                                                                                    Session("intOpportunityState"),
-                                                                                    Me.txtOpportunityCommentEdit.Text,
-                                                                                    Session("strUserName"))
+                        intResult = appService.SetOpportunityStateTemporalTable(Session("intOpportunity"),
+                                                                                Me.txtPSValueEdit.Text,
+                                                                                Me.calCloseDateEdit.SelectedDate.ToString("yyyy-MM-dd"),
+                                                                                Me.ddlFunnelPhaseEdit.SelectedValue,
+                                                                                Me.txtWinPercentEdit.Text,
+                                                                                Me.txtRevenueUpsideEdit.Text,
+                                                                                Me.ddlOpportunityStatusEdit.SelectedValue,
+                                                                                Session("intOpportunityState"),
+                                                                                Me.txtOpportunityCommentEdit.Text,
+                                                                                Session("strUserName"))
 
                         intOpportunityStateDetailResult = appService.SetOpportunityStateDetail2(11, Session("intOpportunity"), Me.ddlOutlookStatusEdit.SelectedValue, Session("strUserName"))
 
@@ -949,7 +964,13 @@ Partial Class OpportunityFile
         Me.ddlFunnelPhaseEdit.SelectedValue = dtOpportunity.Rows(0).Item("funnel_phase_id")
         Me.txtWinPercentEdit.Text = dtOpportunity.Rows(0).Item("win_percent")
         Me.ddlOpportunityStatusEdit.SelectedValue = dtOpportunity.Rows(0).Item("opportunity_status_id")
-        Me.txtRevenueUpsideEdit.Text = dtOpportunity.Rows(0).Item("revenue_upside")
+
+        If IsDBNull(dtOpportunity.Rows(0).Item("revenue_upside")) Then
+            Me.txtRevenueUpsideEdit.Text = 0
+        Else
+            Me.txtRevenueUpsideEdit.Text = dtOpportunity.Rows(0).Item("revenue_upside")
+        End If
+
 
         Me.ddlOutlookStatusEdit.SelectedValue = GetRow(dtOpportunityDetails, "detail_type_id", 11).Item("detail_value_id")
         Me.ddlMPOverrideEdit.SelectedValue = GetRow(dtOpportunityDetails, "detail_type_id", 12).Item("detail_value_id")
@@ -1299,6 +1320,26 @@ Partial Class OpportunityFile
     Protected Sub Page_Unload(sender As Object, e As EventArgs) Handles Me.Unload
 
 
+
+    End Sub
+
+    Protected Sub gvMain_RowDataBound(sender As Object, e As GridViewRowEventArgs) Handles gvMain.RowDataBound
+        Dim strDate As String = ""
+
+        For Each cell As TableCell In e.Row.Cells
+            strDate = cell.Text
+
+            Try
+                strDate = Date.Parse(cell.Text)
+
+                If strDate > Date.Now Then
+                    cell.ForeColor = Drawing.Color.Red
+                End If
+            Catch ex As Exception
+
+            End Try
+
+        Next
 
     End Sub
 End Class

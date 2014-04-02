@@ -24,14 +24,14 @@
         <asp:Panel ID="pnlResourceList" runat="server">
             <div class="Table">
         <div class="Row">
-            <div class="LeftCell">
+            <div class="leftCellUtil">
              <a id="lnkadd" onclick="addResource()" style="cursor: pointer;">Add Resource</a>
             </div>
-            <div class="LeftCell">
+            <div class="leftCellUtil">
                 <a id="lnkdelete" onclick="deleteResource()" style="cursor: pointer;">Delete Resource</a>
   
             </div>
-            <div class="LeftCell">
+            <div class="leftCellUtil">
                 <asp:Label ID="Label1" runat="server" Text="Display"></asp:Label>
                 <asp:DropDownList AutoPostBack="true" ID="ddlDisplay" runat="server">
                     <asp:ListItem Text="10" Value="10"></asp:ListItem>
@@ -44,7 +44,7 @@
     </div>
     <br />
     <div style="clear:both">
-        <asp:GridView ID="gvResource" runat="server" AutoGenerateColumns="False" AllowPaging="True" AllowSorting="True" EmptyDataText="No Record Found" PageSize="15"
+        <asp:GridView ID="gvResource" runat="server" AutoGenerateColumns="False" AllowPaging="True" AllowSorting="True" EmptyDataText="No Record Found" PageSize="15" Width="100%"
              OnPageIndexChanging="gvResource_PageIndexChanging" BackColor="White" BorderColor="#999999" BorderStyle="Solid" BorderWidth="1px" CellPadding="3" ForeColor="Black" GridLines="Vertical">
             <AlternatingRowStyle BackColor="#CCCCCC" />
             <Columns>
@@ -98,76 +98,75 @@
             </div>
         </div>
     </div>
-            <div class ="Table">
-                <div class ="Row">
-                    <div class="LeftCell">
-                        <asp:Label ID="lblQuickLookID" runat="server" Text="Quicklook ID"></asp:Label>
-                    </div>
-                    <div class="RightCell">
-                        <asp:TextBox ID="txtQuicklookID" runat="server" ControlToValidate="txtQuicklookID" MaxLength="10" ></asp:TextBox>
-                        <asp:Label ID="lblQuickLookIDView" runat="server" Text="" CssClass="labelViewMode"></asp:Label>
-                        <asp:RequiredFieldValidator ID="QuickLookIDValidator" runat="server" ErrorMessage="Required!" SetFocusOnError="True" ControlToValidate="txtQuicklookID"></asp:RequiredFieldValidator>
-                        <asp:CustomValidator ID="QuickLookIDCustomValidator" runat="server" ErrorMessage="Existing Quicklook ID" ControlToValidate="txtQuicklookID"></asp:CustomValidator>
-                    </div>
-                </div>
-                <div class ="Row">
-                    <div class="LeftCell">
-                        <asp:Label ID="lblResourceNBR" runat="server" Text="Resource No"></asp:Label>
-                    </div>
-                    <div class="RightCell">
-                        <asp:TextBox ID="txtResourceNBR" runat="server" ClientIDMode="Static" MaxLength="25"></asp:TextBox>
-                 <asp:Label ID="lblResourceNBRView" runat="server" Text="" CssClass="labelViewMode"></asp:Label>
-                 <asp:RequiredFieldValidator ID="ResourceNBRValidator" runat="server" ErrorMessage="Required!" SetFocusOnError="True" ControlToValidate="txtResourceNBR"></asp:RequiredFieldValidator>
-                    </div>
-                </div>
-                <div class ="Row">
-                    <div class="LeftCell">
-                        <asp:Label ID="lblFirstName" runat="server" Text="First Name"></asp:Label>
-                    </div>
-                    <div class="RightCell">
-                        <asp:TextBox ID="txtFirstName" runat="server" MaxLength="25"></asp:TextBox>
-                 <asp:Label ID="lblFirstNameView" runat="server" Text="" CssClass="labelViewMode"></asp:Label>
-                    </div>
-                </div>
-                <div class ="Row">
-                    <div class="LeftCell">
-                                        <asp:Label ID="lblMiddleInitial" runat="server" Text="Middle Initial"></asp:Label>
-                    </div>
-                    <div class="RightCell">
-                 <asp:TextBox ID="txtMiddleInitial" runat="server" MaxLength="1"></asp:TextBox>
-                 <asp:Label ID="lblMiddleInitialView" runat="server" Text="" CssClass="labelViewMode"></asp:Label>
-                    </div>
-                </div>
-                <div class ="Row">
-                    <div class="LeftCell">
-                        <asp:Label ID="lblLastName" runat="server" Text="Last Name"></asp:Label>
-                        </div>
-                     <div class="RightCell">
-                         <asp:TextBox ID="txtLastName" runat="server" MaxLength="25"></asp:TextBox>
-                         <asp:Label ID="lblLastNameView" runat="server" Text="" CssClass="labelViewMode"></asp:Label>
-                        </div>
-                </div>
-                <div class ="Row">
-                        <div class="LeftCell">
-                            <asp:Label ID="lblTelephoneNumber" runat="server" Text="Tel No"></asp:Label>
-                        </div>
-                        <div class="RightCell">
-                            <asp:TextBox ID="txtTelephoneNumber" runat="server" MaxLength="25"></asp:TextBox>
-                            <asp:Label ID="lblTelephoneNumberView" runat="server" Text="" CssClass="labelViewMode"></asp:Label>
-                        </div>
-                </div>
-                <div class ="Row">
-                    <div class="LeftCell">
-                        <asp:Label ID="lblCountryCode" runat="server" Text="Country Code"></asp:Label>
-                    </div>
-                    <div class="RightCell">
-                        <asp:TextBox ID="txtCountryCode" runat="server" MaxLength="2"></asp:TextBox>
-                        <asp:Label ID="lblCountryCodeView" runat="server" Text="" CssClass="labelViewMode"></asp:Label>
-                        <asp:RequiredFieldValidator ID="CountryCodeValidator" runat="server" ErrorMessage="Required!" SetFocusOnError="True" ControlToValidate="txtCountryCode"></asp:RequiredFieldValidator>
-                    </div>
-                </div>
+    <div class="table">
+        <div class="tr">
+            <div class="td">
+                <asp:Label ID="lblQuickLookID" runat="server" Text="Quicklook ID"></asp:Label>
             </div>
-        
+            <div class="td">
+                <asp:TextBox ID="txtQuicklookID" runat="server" ControlToValidate="txtQuicklookID" MaxLength="10" ></asp:TextBox>
+                <asp:Label ID="lblQuickLookIDView" runat="server" Text="" CssClass="labelViewMode"></asp:Label>
+                <asp:RequiredFieldValidator ID="QuickLookIDValidator" runat="server" ErrorMessage="Required!" SetFocusOnError="True" ControlToValidate="txtQuicklookID"></asp:RequiredFieldValidator>
+                <asp:CustomValidator ID="QuickLookIDCustomValidator" runat="server" ErrorMessage="Existing Quicklook ID" ControlToValidate="txtQuicklookID"></asp:CustomValidator>
+            </div>
+        </div>
+        <div class="tr">
+            <div class="td">
+                <asp:Label ID="lblResourceNBR" runat="server" Text="Resource No"></asp:Label>
+            </div>
+            <div class="td">
+                <asp:TextBox ID="txtResourceNBR" runat="server" ClientIDMode="Static" MaxLength="10"></asp:TextBox>
+                <asp:Label ID="lblResourceNBRView" runat="server" Text="" CssClass="labelViewMode"></asp:Label>
+                <asp:RequiredFieldValidator ID="ResourceNBRValidator" runat="server" ErrorMessage="Required!" SetFocusOnError="True" ControlToValidate="txtResourceNBR"></asp:RequiredFieldValidator>
+            </div>
+        </div>
+        <div class="tr">
+            <div class="td">
+                 <asp:Label ID="lblFirstName" runat="server" Text="First Name"></asp:Label>
+            </div>
+            <div class="td">
+                <asp:TextBox ID="txtFirstName" runat="server" MaxLength="25"></asp:TextBox>
+                <asp:Label ID="lblFirstNameView" runat="server" Text="" CssClass="labelViewMode"></asp:Label>
+            </div>
+        </div>
+        <div class="tr">
+            <div class="td">
+                <asp:Label ID="lblMiddleInitial" runat="server" Text="Middle Initial"></asp:Label>
+            </div>
+            <div class="td">
+                <asp:TextBox ID="txtMiddleInitial" runat="server" MaxLength="1"></asp:TextBox>
+                <asp:Label ID="lblMiddleInitialView" runat="server" Text="" CssClass="labelViewMode"></asp:Label>
+            </div>
+        </div>
+        <div class="tr">
+            <div class="td">
+                <asp:Label ID="lblLastName" runat="server" Text="Last Name"></asp:Label>
+            </div>
+            <div class="td">
+                <asp:TextBox ID="txtLastName" runat="server" MaxLength="25"></asp:TextBox>
+                <asp:Label ID="lblLastNameView" runat="server" Text="" CssClass="labelViewMode"></asp:Label>
+            </div>
+        </div>
+        <div class="tr">
+            <div class="td">
+                <asp:Label ID="lblTelephoneNumber" runat="server" Text="Tel No"></asp:Label>
+            </div>
+            <div class="td">
+                <asp:TextBox ID="txtTelephoneNumber" runat="server" MaxLength="25"></asp:TextBox>
+                <asp:Label ID="lblTelephoneNumberView" runat="server" Text="" CssClass="labelViewMode"></asp:Label>
+            </div>
+        </div>
+        <div class="tr">
+            <div class="td">
+                <asp:Label ID="lblCountryCode" runat="server" Text="Country Code"></asp:Label>
+            </div>
+            <div class="td">
+                <asp:TextBox ID="txtCountryCode" runat="server" MaxLength="2"></asp:TextBox>
+                <asp:Label ID="lblCountryCodeView" runat="server" Text="" CssClass="labelViewMode"></asp:Label>
+                <asp:RequiredFieldValidator ID="CountryCodeValidator" runat="server" ErrorMessage="Required!" SetFocusOnError="True" ControlToValidate="txtCountryCode"></asp:RequiredFieldValidator>
+            </div>
+        </div>
+    </div>
         </asp:Panel>
     
    <asp:HiddenField ID="hdnResourceID"  runat="server" value="-1"/>
